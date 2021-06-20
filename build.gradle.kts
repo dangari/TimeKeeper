@@ -1,14 +1,13 @@
-import org.jetbrains.compose.compose
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.4.20"
-    id("org.jetbrains.compose") version "0.2.0-build132"
+    kotlin("jvm") version "1.5.10"
+    id("application")
+    id("org.openjfx.javafxplugin") version "0.0.10"
 }
 
 group = "me.chris"
-version = "1.0"
+version = "1.0.0"
 
 repositories {
     jcenter()
@@ -17,19 +16,20 @@ repositories {
 }
 
 dependencies {
-    implementation(compose.desktop.currentOs)
+    implementation("org.junit.jupiter:junit-jupiter:5.4.2")
+    implementation("no.tornado:tornadofx:1.7.20")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.10")
+}
+
+javafx {
+    version = "12"
+    modules("javafx.controls", "javafx.fxml")
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 tasks.withType<KotlinCompile>() {
     kotlinOptions.jvmTarget = "11"
-}
-
-compose.desktop {
-    application {
-        mainClass = "MainKt"
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "TimeKeeper"
-        }
-    }
 }
