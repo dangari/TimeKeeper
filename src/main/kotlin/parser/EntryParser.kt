@@ -1,5 +1,6 @@
 package parser
 
+import data.Time
 import data.TimeEntry
 import java.time.LocalDate
 import java.util.*
@@ -16,10 +17,10 @@ class EntryParser {
         return TimeEntry(startTime, endTime, breakTime, date)
     }
 
-    private fun createCalendarFromTime(time: String): Calendar {
+    private fun createCalendarFromTime(time: String): Time {
         val result = """(\d{2}):(\d{2})""".toRegex().matchEntire(time)
         val hours = result!!.groups[1]!!.value.toInt()
         val minutes = result.groups[2]!!.value.toInt()
-        return Calendar.Builder().setTimeOfDay(hours, minutes, 0).build()
+        return Time(hours, minutes)
     }
 }
