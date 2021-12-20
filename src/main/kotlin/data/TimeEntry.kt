@@ -1,9 +1,14 @@
 package data
 
 import java.time.LocalDate
-import java.util.*
 
-data class TimeEntry(val startTime: Time, val endTime: Time, val breakDuration: Short, val date: LocalDate) : Comparable<TimeEntry> {
+data class TimeEntry(
+    val startTime: Time,
+    val endTime: Time,
+    val breakDuration: Short,
+    val date: LocalDate,
+    val type: TimeEntryType = TimeEntryType.WORKING_DAY
+) : Comparable<TimeEntry> {
     override fun toString(): String {
         return "$date $startTime-$endTime: $endTime | $breakDuration"
     }
