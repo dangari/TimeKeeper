@@ -1,30 +1,27 @@
 package utils
 
-import data.DateKey
 import data.Time
 import data.TimeEntry
-import data.TimeEntryType
-import tornadofx.SortedFilteredList
 import java.io.File
 import java.io.UnsupportedEncodingException
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.util.stream.Collectors
 
-class AtWorkExportReader {
-    fun readFileLineByLineUsingForEachLine(fileName: String): HashMap<DateKey, SortedFilteredList<TimeEntry>> {
-        val timeEntries = HashMap<DateKey, SortedFilteredList<TimeEntry>>()
+class AtWorkImporter {
+    fun import(fileName: String): List<TimeEntry> {
+        val timeEntries = ArrayList<TimeEntry>()
         File(fileName).forEachLine {
             val line = it.split(";")
             val dateRegex = """\d{4}-\d{2}-\d{2}""".toRegex() //2020-03-13
             if (line.size > 3) {
                 if (line[1] == "Vacation") {
                     val entries = createVacationDays(line)
-                    timeEntries.addTimeEntries(entries)
+                    timeEntries.addAll(entries)
                 }
                 if (dateRegex.containsMatchIn(line[1])) {
                     val entry = createWorkingDay(line)
-                    timeEntries.addTimeEntry(entry)
+                    timeEntries.add(entry)
                 }
             }
         }
@@ -64,9 +61,8 @@ class AtWorkExportReader {
             vacationDays.add(startDate)
         }
         val entries = ArrayList<TimeEntry>()
-        val time = Time(0, 0)
         vacationDays.filter{it.dayOfWeek != null && it.dayOfWeek != DayOfWeek.SATURDAY}
-            .forEach{entries.add(TimeEntry(time, time, 0, it, TimeEntryType.VACATION))}
+            .forEach{entries.add(TimeEntry(it))}
         return entries
     }
 
@@ -82,19 +78,6 @@ class AtWorkExportReader {
         val minutes = match.groupValues[2].toShort()
 
         return (hours * 60 + minutes).toShort()
-    }
-
-    private fun HashMap<DateKey, SortedFilteredList<TimeEntry>>.addTimeEntry(entry: TimeEntry) {
-        val dateKey = DateKey(entry.date.year, entry.date.monthValue)
-        if (!this.containsKey(dateKey)) {
-            this[dateKey] = SortedFilteredList()
-        }
-
-        this[dateKey]?.add(entry)
-    }
-
-    private fun HashMap<DateKey, SortedFilteredList<TimeEntry>>.addTimeEntries(entries: List<TimeEntry>) {
-        entries.forEach { this.addTimeEntry(it) }
     }
 
 }

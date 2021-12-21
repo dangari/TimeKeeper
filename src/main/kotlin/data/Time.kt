@@ -8,7 +8,7 @@ data class Time(val hour: Int, val minutes: Int): Comparable<Time> {
     }
 
     override fun toString(): String {
-        return "${hour.timeFormat()}:${hour.timeFormat()}"
+        return "${hour.timeFormat()}:${minutes.timeFormat()}"
     }
 
     override fun compareTo(other: Time): Int {

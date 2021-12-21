@@ -5,6 +5,7 @@ import data.TimeEntry
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import utils.EntryParser
 import java.time.LocalDate
 
 internal class EntryParserTest {

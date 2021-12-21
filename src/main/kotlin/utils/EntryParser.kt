@@ -1,9 +1,8 @@
-package parser
+package utils
 
 import data.Time
 import data.TimeEntry
 import java.time.LocalDate
-import java.util.*
 
 class EntryParser {
     private val regex = """(?<startTime>((\d)|([01]\d)|(2\d)):([012345]\d))\s*-\s*(?<endTime>((\d)|([01]\d)|(2\d)):([012345]\d))(/(?<breakTime>\d+))?""".toRegex();
@@ -22,5 +21,4 @@ class EntryParser {
         val hours = result!!.groups[1]!!.value.toInt()
         val minutes = result.groups[2]!!.value.toInt()
         return Time(hours, minutes)
-    }
-}
+    }}
