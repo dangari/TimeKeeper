@@ -1,7 +1,6 @@
 package data
 
 import kotlin.math.abs
-import kotlin.math.min
 
 data class Time(val hour: Int, val minutes: Int, val isOverTime: Boolean = false): Comparable<Time> {
 
@@ -26,7 +25,7 @@ data class Time(val hour: Int, val minutes: Int, val isOverTime: Boolean = false
     }
 
     override fun toString(): String {
-        return if(hour < 0 || minutes < 0) "-" else "" + "${abs(hour).timeFormat()}:${abs(minutes).timeFormat()}"
+        return (if(hour < 0 || minutes < 0) "-" else "") + "${abs(hour).timeFormat()}:${abs(minutes).timeFormat()}"
 
     }
 

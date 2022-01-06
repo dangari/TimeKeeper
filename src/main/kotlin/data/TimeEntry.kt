@@ -18,7 +18,7 @@ data class TimeEntry(
     }
 
     constructor(date:LocalDate): this(Time(0,0), Time(0,0), 0, date, TimeEntryType.VACATION)
-    constructor(date:LocalDate, description: String): this(Time(0,0), Time(0,0), 0, date, TimeEntryType.VACATION, description)
+    constructor(date:LocalDate, description: String): this(Time(0,0), Time(0,0), 0, date, TimeEntryType.HOLIDAY, description)
 
     override fun toString(): String {
         return "$date $startTime-$endTime: $endTime | $breakDuration"

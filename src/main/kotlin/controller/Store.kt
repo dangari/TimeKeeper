@@ -30,9 +30,9 @@ class Store : Controller() {
         years.replaceAll(timeEntries.getAllYears())
     }
 
-    fun addTimeEntry(entry: String, date: LocalDate) {
+    fun addTimeEntry(timeEntry: TimeEntry, date: LocalDate) {
         val dateKey = DateKey(date.year, date.monthValue)
-        val timeEntry = EntryParser().getTime(entry, date)
+
         if (!timeEntries.containsKey(dateKey)) {
             timeEntries[dateKey] = SortedFilteredList()
         }
