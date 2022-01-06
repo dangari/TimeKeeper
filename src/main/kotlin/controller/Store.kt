@@ -2,13 +2,11 @@ package controller
 
 import data.DateKey
 import data.TimeEntry
-import utils.EntryParser
 import tornadofx.Controller
 import tornadofx.SortedFilteredList
 import tornadofx.asObservable
-import utils.AtWorkImporter
-import utils.HolidayImporter
-import utils.addTimeEntries
+import tornadofx.sort
+import utils.*
 import java.time.LocalDate
 
 class Store : Controller() {
@@ -27,6 +25,9 @@ class Store : Controller() {
         val holidays = HolidayImporter().importHolidays("F:\\Projects\\TimeKeeper\\src\\recources\\holidays.json")
         timeEntries.addTimeEntries(holidays)
         timeEntries.addTimeEntries(importedTimeEntries)
+
+        months.replaceAll(timeEntries.getAllMonths())
+        years.replaceAll(timeEntries.getAllYears())
     }
 
     fun addTimeEntry(entry: String, date: LocalDate) {
@@ -44,6 +45,12 @@ class Store : Controller() {
         if (!years.contains(dateKey.year)) {
             years.add(dateKey.year)
         }
+    }
+
+    private fun SortedFilteredList<Int>.replaceAll(newEntries: List<Int>) {
+        this.clear()
+        this.addAll(newEntries.sorted())
+        this.sort()
     }
 
 }

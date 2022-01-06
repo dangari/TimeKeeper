@@ -1,5 +1,7 @@
 package data
 
+import tornadofx.SortedFilteredList
+
 data class DateKey(val year: Int, val month: Int) : Comparable<DateKey> {
     override fun compareTo(other: DateKey): Int {
         if (year > other.year) return 1

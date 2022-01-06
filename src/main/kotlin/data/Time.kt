@@ -1,14 +1,33 @@
 package data
 
-data class Time(val hour: Int, val minutes: Int): Comparable<Time> {
+import kotlin.math.abs
+import kotlin.math.min
+
+data class Time(val hour: Int, val minutes: Int, val isOverTime: Boolean = false): Comparable<Time> {
 
     init {
-        require(hour in 0 .. 23)
-        require(minutes in 0 .. 59)
+        if (!isOverTime) {
+            require(hour in 0..23)
+            require(minutes in 0..59)
+        }
+        else {
+            require(minutes in 0..59 || minutes in -59 .. -1)
+            require(minutes >= 0 && hour >= 0 || minutes <= 0 && hour <= 0)
+        }
+    }
+
+    constructor(minutes: Int, isOverTime: Boolean = false): this(minutes/60, minutes - 60 * (minutes/60), isOverTime)
+
+    operator fun plus(other: Time) = Time(this.inMinutes() + other.inMinutes(), true)
+    operator fun minus(other: Time) = Time(this.inMinutes() - other.inMinutes(), true)
+
+    fun inMinutes(): Int {
+        return this.minutes + this.hour * 60
     }
 
     override fun toString(): String {
-        return "${hour.timeFormat()}:${minutes.timeFormat()}"
+        return if(hour < 0 || minutes < 0) "-" else "" + "${abs(hour).timeFormat()}:${abs(minutes).timeFormat()}"
+
     }
 
     override fun compareTo(other: Time): Int {
