@@ -4,30 +4,31 @@ import data.DateKey
 import data.TimeEntry
 import tornadofx.Controller
 import tornadofx.SortedFilteredList
-import tornadofx.asObservable
 import tornadofx.sort
 import utils.*
 import java.time.LocalDate
 
 class Store : Controller() {
-    val timeEntries = HashMap<DateKey, SortedFilteredList<TimeEntry>>()
+    //val timeEntries = HashMap<DateKey, SortedFilteredList<TimeEntry>>()
+    val timeEntries = DataHandler().loadEntriesFromFile()
     val months = SortedFilteredList<Int>()
     val years = SortedFilteredList<Int>()
 
     init {
         val date = LocalDate.now()
         val dateKey = DateKey(date.year, date.month.value)
-        timeEntries[dateKey] = SortedFilteredList()
+        //timeEntries[dateKey] = SortedFilteredList()
         months.add(date.monthValue)
         years.add(date.year)
 
-        val importedTimeEntries = AtWorkImporter().import("F:\\Projects\\TimeKeeper\\src\\test\\kotlin\\utils\\times.csv")
-        val holidays = HolidayImporter().importHolidays("F:\\Projects\\TimeKeeper\\src\\recources\\holidays.json")
-        timeEntries.addTimeEntries(holidays)
-        timeEntries.addTimeEntries(importedTimeEntries)
+        //val importedTimeEntries = AtWorkImporter().import("F:\\Projects\\TimeKeeper\\resources\\times.csv")
+        //val holidays = HolidayImporter().importHolidays("holidays.json")
+        //timeEntries.addTimeEntries(holidays)
+        //timeEntries.addTimeEntries(importedTimeEntries)
 
         months.replaceAll(timeEntries.getAllMonths())
         years.replaceAll(timeEntries.getAllYears())
+        //DataHandler().saveEntriesToFile(timeEntries)
     }
 
     fun addTimeEntry(timeEntry: TimeEntry, date: LocalDate) {

@@ -26,4 +26,5 @@ build/
 
 .gradle/
 
-src/test/kotlin/utils/times.csv
+times.csv
+save.json

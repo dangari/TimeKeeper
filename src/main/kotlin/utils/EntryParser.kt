@@ -17,7 +17,7 @@ class EntryParser {
     }
 
     private fun createCalendarFromTime(time: String): Time {
-        val result = """(\d{2}):(\d{2})""".toRegex().matchEntire(time)
+        val result = """(\d\d?):(\d{2})""".toRegex().matchEntire(time)
         val hours = result!!.groups[1]!!.value.toInt()
         val minutes = result.groups[2]!!.value.toInt()
         return Time(hours, minutes)

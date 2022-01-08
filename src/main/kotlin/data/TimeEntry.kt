@@ -1,11 +1,15 @@
 package data
 
+import kotlinx.serialization.Serializable
+import serializer.LocalDateSerializer
 import java.time.LocalDate
 
+@Serializable
 data class TimeEntry(
     val startTime: Time,
     val endTime: Time,
     val breakDuration: Short,
+    @Serializable(with = LocalDateSerializer::class)
     val date: LocalDate,
     val type: TimeEntryType = TimeEntryType.WORKING_DAY,
     val description: String = "",

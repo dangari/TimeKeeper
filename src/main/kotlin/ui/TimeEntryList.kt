@@ -8,21 +8,17 @@ import events.SelectedListChangedEvent
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import tornadofx.*
-import utils.addEmptyEntry
-import utils.getOverTimeOfMonth
-import utils.getTotalWorkingHours
-import utils.getVacationDays
+import utils.*
 import java.time.LocalDate
-import java.time.Month
-import java.time.Year
 
 class TimeEntryList: View() {
     private val store: Store by inject()
     private val selectedMonth = SimpleIntegerProperty(LocalDate.now().month.value)
     private val selectedYear = SimpleIntegerProperty(LocalDate.now().year)
-    private var overTime = SimpleStringProperty("")
-    private var workingHours = SimpleStringProperty("")
-    private var vacationDays = SimpleStringProperty("")
+    private var monthCalculatedTime = SimpleStringProperty("")
+    private var totalCalculatedTime = SimpleStringProperty("")
+    private var yearCalculatedTime = SimpleStringProperty("")
+    private val timeCalculator = TimeCalculator()
 
     override val root = vbox {
         hbox {
@@ -30,14 +26,23 @@ class TimeEntryList: View() {
             combobox(selectedMonth, store.months.sortedItems)
         }
         vbox {
-           label(overTime)
-           label(workingHours)
-           label(vacationDays)
+           hbox {
+               label("Month: ")
+               label(monthCalculatedTime)
+           }
+            hbox {
+                label("Year: ")
+                label(yearCalculatedTime)
+            }
+            hbox {
+                label("Total: ")
+                label(totalCalculatedTime)
+            }
             subscribe<SelectedListChangedEvent> { event -> updateMonthlyInfo(event.year, event.month) }
             subscribe<AddTimeEntryEvent> { event -> updateMonthlyInfo(event.year, event.month) }
         }
         vbox {
-            tableview(store.timeEntries[DateKey(selectedYear.value, selectedMonth.value)]) {
+            tableview(store.timeEntries[DateKey(selectedYear.value, selectedMonth.value)]?.sortedItems) {
                 isEditable = true
                 readonlyColumn("Date", TimeEntry::date)
                 readonlyColumn("Start Time ", TimeEntry::startTime)
@@ -45,18 +50,21 @@ class TimeEntryList: View() {
                 readonlyColumn("Break", TimeEntry::breakDuration)
                 readonlyColumn("Working Time", TimeEntry::workingTime)
                 readonlyColumn("Overtime", TimeEntry::overTime)
+                readonlyColumn("Type", TimeEntry::type)
+                readonlyColumn("Description", TimeEntry::description)
                 subscribe<SelectedListChangedEvent> { event ->
                     val dateKey = DateKey(event.year, event.month)
                     if (!store.timeEntries.containsKey(dateKey)) {
                         store.timeEntries.addEmptyEntry(dateKey)
                     }
-                    items = store.timeEntries[dateKey]
+                    items = store.timeEntries[dateKey]?.sortedItems
                 }
             }
         }
     }
 
     init {
+        timeCalculator.init(store.timeEntries)
         updateMonthlyInfo(selectedYear.value, selectedMonth.value)
         selectedYear.onChange {
             fire(SelectedListChangedEvent(it, selectedMonth.value))
@@ -73,8 +81,9 @@ class TimeEntryList: View() {
             store.timeEntries.addEmptyEntry(dateKey)
         }
         val entries = store.timeEntries[dateKey]
-        overTime.value = entries?.getOverTimeOfMonth().toString()
-        vacationDays.value = entries?.getVacationDays().toString()
-        workingHours.value = entries?.getTotalWorkingHours().toString()
+        monthCalculatedTime.value = timeCalculator.getMonthlyCalculatedTimes(dateKey, entries!!).toString()
+        yearCalculatedTime.value = timeCalculator.yearTimeCalculation(year).toString()
+        totalCalculatedTime.value = timeCalculator.totalTimeCalculation().toString()
     }
+
 }

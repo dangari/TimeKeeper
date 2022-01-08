@@ -4,6 +4,7 @@ import controller.Store
 import events.AddTimeEntryEvent
 import javafx.beans.property.SimpleObjectProperty
 import tornadofx.*
+import utils.DataHandler
 import utils.EntryParser
 import java.time.LocalDate
 
@@ -21,6 +22,7 @@ class TimeInput: View() {
                     val timeEntry = EntryParser().getTime(text, date.get())
                     store.addTimeEntry(timeEntry, date.get())
                     fire(AddTimeEntryEvent(date.get().year, date.get().monthValue, timeEntry))
+                    DataHandler().saveEntriesToFile(store.timeEntries)
                     clear()
                 }
             }

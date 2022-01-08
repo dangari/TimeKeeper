@@ -1,7 +1,9 @@
 package data
 
+import kotlinx.serialization.Serializable
 import kotlin.math.abs
 
+@Serializable
 data class Time(val hour: Int, val minutes: Int, val isOverTime: Boolean = false): Comparable<Time> {
 
     init {
