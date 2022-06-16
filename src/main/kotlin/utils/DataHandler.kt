@@ -25,9 +25,12 @@ class DataHandler {
     }
 
     fun loadEntriesFromFile(): HashMap<DateKey, SortedFilteredList<TimeEntry>> {
-        val inputStream: InputStream = File(saveFile).inputStream()
+        val saveFile = File(saveFile)
+        val inputStream: InputStream = saveFile.inputStream()
         val inputString = inputStream.bufferedReader().use { it.readText() }
+        if (inputString.isBlank()) return HashMap()
         val localSave = Json.decodeFromString<LocalSave>(inputString)
+
         return localSave.timeEntries.convertList()
     }
 }

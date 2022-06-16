@@ -7,6 +7,7 @@ import tornadofx.SortedFilteredList
 import tornadofx.sort
 import utils.*
 import java.time.LocalDate
+import java.util.HashMap
 
 class Store : Controller() {
     //val timeEntries = HashMap<DateKey, SortedFilteredList<TimeEntry>>()
@@ -21,10 +22,12 @@ class Store : Controller() {
         months.add(date.monthValue)
         years.add(date.year)
 
-        //val importedTimeEntries = AtWorkImporter().import("F:\\Projects\\TimeKeeper\\resources\\times.csv")
-        //val holidays = HolidayImporter().importHolidays("holidays.json")
-        //timeEntries.addTimeEntries(holidays)
-        //timeEntries.addTimeEntries(importedTimeEntries)
+        val importedTimeEntries = AtWorkImporter().import("times.csv")
+        val holidays = HolidayImporter().importHolidays("holidays.json")
+        timeEntries.addTimeEntries(holidays)
+        timeEntries.addTimeEntries(importedTimeEntries)
+        timeEntries.addMissingDays()
+        timeEntries.convertSortedList()
 
         months.replaceAll(timeEntries.getAllMonths())
         years.replaceAll(timeEntries.getAllYears())
@@ -55,3 +58,5 @@ class Store : Controller() {
     }
 
 }
+
+

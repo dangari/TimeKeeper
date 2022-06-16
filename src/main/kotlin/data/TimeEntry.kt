@@ -21,7 +21,8 @@ data class TimeEntry(
         require(startTime <= endTime)
     }
 
-    constructor(date:LocalDate): this(Time(0,0), Time(0,0), 0, date, TimeEntryType.VACATION)
+    constructor(date:LocalDate): this(date, TimeEntryType.VACATION)
+    constructor(date: LocalDate, type: TimeEntryType): this(Time(0, 0), Time(0, 0), 0, date, type)
     constructor(date:LocalDate, description: String): this(Time(0,0), Time(0,0), 0, date, TimeEntryType.HOLIDAY, description)
 
     override fun toString(): String {
