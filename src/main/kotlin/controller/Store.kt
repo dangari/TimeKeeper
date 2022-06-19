@@ -22,8 +22,8 @@ class Store : Controller() {
         months.add(date.monthValue)
         years.add(date.year)
 
-        val importedTimeEntries = AtWorkImporter().import("times.csv")
         val holidays = HolidayImporter().importHolidays("holidays.json")
+        val importedTimeEntries = AtWorkImporter().import("times.csv", holidays)
         timeEntries.addTimeEntries(holidays)
         timeEntries.addTimeEntries(importedTimeEntries)
         timeEntries.addMissingDays()

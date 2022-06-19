@@ -22,7 +22,7 @@ class AtWorkImporter {
             return this
         }
     }
-    fun import(fileName: String): List<TimeEntry> {
+    fun import(fileName: String, holidays: List<TimeEntry>): List<TimeEntry> {
         val timeEntries = ArrayList<TimeEntry>()
         val path = System.getProperty("user.dir")
         val file = File("$path/resources/$fileName")
@@ -33,7 +33,7 @@ class AtWorkImporter {
             block = block.determineBlock(line[0])
             if (line.size > 3) {
                 if ((block == Block.SICKNESS || block == Block.VACATION) && line[1] == "No Name") {
-                    val entries = createVacationDays(line, block)
+                    val entries = createVacationDays(line, block, holidays)
                     timeEntries.addAll(entries)
                 }
                 if (dateRegex.containsMatchIn(line[1])) {
@@ -69,7 +69,7 @@ class AtWorkImporter {
     }
 
     // Vacation;2021-05-17;2021-05-21;5;"0
-    private fun createVacationDays(line: List<String>, block: Block): List<TimeEntry> {
+    private fun createVacationDays(line: List<String>, block: Block, holidays: List<TimeEntry>): List<TimeEntry> {
         var startDate = LocalDate.parse(line[2])
         var endDate = LocalDate.parse(line[3])
 
@@ -87,7 +87,7 @@ class AtWorkImporter {
         }
         val entries = ArrayList<TimeEntry>()
         val type = if (block == Block.SICKNESS) TimeEntryType.SICKNESS else TimeEntryType.VACATION
-        vacationDays.filter{it.dayOfWeek != null && it.dayOfWeek != DayOfWeek.SATURDAY}
+        vacationDays.filter{it.dayOfWeek != null && it.dayOfWeek != DayOfWeek.SATURDAY && !holidays.any { entry -> entry.date == it }}
             .forEach{entries.add(TimeEntry(it, type))}
         return entries
     }
